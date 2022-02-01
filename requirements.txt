@@ -1,4 +1,5 @@
 jupyterlab
+pandas
 matplotlib
 Pillow
 numpy
