@@ -5,3 +5,6 @@ Pillow
 numpy
 scipy
 tensorflow-hub
+seaborn
+imblearn
+scikit-learn
