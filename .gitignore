@@ -130,3 +130,6 @@ dmypy.json
 
 /Data
 /.DS_Store
+
+# ML-Flow (config file has sensitive data)
+.mlflow_uri
