@@ -8,3 +8,4 @@ tensorflow-hub
 seaborn
 imblearn
 scikit-learn
+scikit-image
