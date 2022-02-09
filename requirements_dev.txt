@@ -1,0 +1,12 @@
+jupyterlab
+matplotlib
+numpy
+pandas
+seaborn
+scikit-learn
+statsmodels
+pytest
+testbook
+mlflow
+parsenvy
+black
