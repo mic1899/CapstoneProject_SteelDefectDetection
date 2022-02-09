@@ -3,6 +3,7 @@ from skimage import io
 import matplotlib.pyplot as plt
 import pandas as pd
 
+"""For model performance"""
 
 def get_false_prediction_indices(y_test, y_pred):
     # extract indices where predictions were incorrect
@@ -68,6 +69,37 @@ def print_false_classifications(df_complete, df_model, y_test, y_pred, number_im
     true_labels = get_true_labels_of_false_predictions(y_test, y_pred, false_prediction_indices)
     
     # build a data frame with all necessary information
-    false_predicted_images = get false_predicted_images(df_complete, df_model, false_prediction_indices, true_labels)
+    false_predicted_images = get_false_predicted_images(df_complete, df_model, false_prediction_indices, true_labels)
     # print randomly selected images from misclassified images
-    print_missclasifications(false_predicted_images, number_images)
+    print_misclassifications(false_predicted_images, number_images)
+    
+
+"""For general purpose"""
+
+
+def print_batch(df_with_filepath, class_ids, blackness=False, number_images=5):
+    # create random index for `number_images`
+    random_index = np.array(np.random.rand(number_images) * len(df_with_filepath.ImageId) + 1, dtype='int')
+
+    for i in range(number_images):
+        # gather required info to retrieve image and label the plots
+        file_path_to_image = df_with_filepath['FilePath'].iloc[random_index[i]]
+        class_id = class_ids.iloc[random_index[i]]
+        image_id = df_with_filepath['ImageId'].iloc[random_index[i]]
+        if blackness:
+            blackness = df_with_filepath['PercentageBlack'].iloc[random_index[i]]
+
+
+        
+        # read-in the image
+        img = io.imread(file_path_to_image)
+        plt.figure(figsize=(25, 14))
+        
+        ax = plt.subplot(number_images, 1, i + 1)
+        plt.imshow(img)
+        if blackness:
+            plt.title(f'Image ID: {image_id} | ClassId: {class_id} | Percentage Black: {blackness}', fontsize=16);
+        else:
+            plt.title(f'Image ID: {image_id} | ClassId: {class_id}', fontsize=16);
+        plt.axis("off")
+        
