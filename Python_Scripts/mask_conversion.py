@@ -169,5 +169,5 @@ def get_encoding_list(mask, class_id=1):
 def encode_pixel(mask, class_id=1):
     """returns a string with pairs of (`starting_pixel`, `pixel_length`) for a `class_id` encoding in `mask`
     """
-    encoding = get_encoding_list(mask)
+    encoding = get_encoding_list(mask, class_id)
     return ' '.join(encoding)
