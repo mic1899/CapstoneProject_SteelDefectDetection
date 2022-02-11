@@ -77,7 +77,7 @@ def print_false_classifications(df_complete, df_model, y_test, y_pred, number_im
 """For general purpose"""
 
 
-def print_batch(df_with_filepath, class_ids, blackness=False, number_images=5):
+def print_batch(df_with_filepath, class_ids, blackness=False, show_keypoints=False, number_images=5):
     # create random index for `number_images`
     random_index = np.array(np.random.rand(number_images) * len(df_with_filepath.ImageId) + 1, dtype='int')
 
@@ -88,6 +88,8 @@ def print_batch(df_with_filepath, class_ids, blackness=False, number_images=5):
         image_id = df_with_filepath['ImageId'].iloc[random_index[i]]
         if blackness:
             blackness = df_with_filepath['PercentageBlack'].iloc[random_index[i]]
+        if show_keypoints:
+            keypoints = df_with_filepath['NumberKP'].iloc[random_index[i]]
 
 
         
@@ -97,9 +99,11 @@ def print_batch(df_with_filepath, class_ids, blackness=False, number_images=5):
         
         ax = plt.subplot(number_images, 1, i + 1)
         plt.imshow(img)
+        title = f'Image ID: {image_id} | ClassId: {class_id}'
         if blackness:
-            plt.title(f'Image ID: {image_id} | ClassId: {class_id} | Percentage Black: {blackness}', fontsize=16);
-        else:
-            plt.title(f'Image ID: {image_id} | ClassId: {class_id}', fontsize=16);
+            title += f' | Percentage Black: {blackness}'
+        if show_keypoints:
+            title += f' | Number Keypoints: {keypoints}'
+        plt.title(title, fontsize=16);
         plt.axis("off")
         

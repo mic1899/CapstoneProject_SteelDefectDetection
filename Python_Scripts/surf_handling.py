@@ -157,3 +157,67 @@ def add_keypoint_parameters(df, max_rank=50):
     print('average processing time per rank:', total_time / max_rank)
   
     return df
+
+
+def add_keypoints_to_frame(df, surf_object):
+    # prepare dictionary to gather data
+    surf_images = {'keypoints': [],
+                   'ImageId': [],
+                   'NumberKP': []
+                  }
+
+    print('processing images...')
+    start = time.time()
+
+    for idx, image_id in enumerate(df.ImageId):
+        surf_images['ImageId'].append(image_id)
+
+        # `image` so far holds just the path to the image. Convert to image file
+        image = io.imread("data/train_images/" + image_id)
+        # Find keypoints and descriptors directly
+        kp, des = surf_object.detectAndCompute(image, None)
+
+        surf_images['keypoints'].append(kp)
+        surf_images['NumberKP'].append(len(kp))
+        if idx % 500 == 0 and idx != 0:
+            print(f'image number {idx} processed...')
+
+    end = time.time()
+    print('processing done.')
+    print('required time:', end - start)
+    
+    temp = pd.DataFrame.from_dict(surf_images)
+    
+    return df.merge(temp, on='ImageId')
+
+
+def build_keypoints_from_list(train_images_list, surf_object):
+    # prepare dictionary to gather data
+    surf_images = {'keypoints': [],
+                   'ImageId': [],
+                   'NumberKP': []
+                  }
+
+    print('processing images...')
+    start = time.time()
+
+    for idx, image in enumerate(train_images_list):
+        surf_images['ImageId'].append(image.name)
+    
+        # `image` so far holds just the path to the image. Convert to image file
+        image = io.imread("data/train_images/" + image.name)
+        # Find keypoints and descriptors directly
+        kp, des = surf.detectAndCompute(image, None)
+
+        surf_images['keypoints'].append(kp)
+        surf_images['NumberKP'].append(len(kp))
+        if idx % 500 == 0 and idx != 0:
+            print(f'image number {idx} processed...')
+
+    end = time.time()
+    print('processing done.')
+    print('required time:', end - start)
+    
+    temp = pd.DataFrame.from_dict(surf_images)
+    
+    return temp
