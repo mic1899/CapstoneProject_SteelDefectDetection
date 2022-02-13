@@ -63,6 +63,47 @@ def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=T
     """
     length_sum = 0
     # initialise mask
+    mask = np.ones(image_dimension)
+    rows = image_dimension[0]
+    
+    for pair in get_pixel_pairs(encoded_pixels):
+        # fetch column and row indices
+        if image:
+            column, row = get_column_row(pair[0])
+        else: # for testing purposes
+            column, row = get_column_row(pair[0],rows)
+        # testing
+        length_sum += int(pair[1])
+        
+        # set all pixels of the respective pair to `class_id`
+        for pixel in range(int(pair[1])):
+            # write into same column
+            if (row + pixel) < rows:
+                mask[row + pixel][column] = 0  
+                
+            else: # for column changes
+                # compute required column and row shifts for `class_id` placement
+                col_shift = (row + pixel) // rows 
+                row_shift = pixel - col_shift * rows
+
+                # write `class_id` to shifted position
+                mask[row + row_shift][column + col_shift] = 0
+
+    return mask
+
+
+def create_mask_with_class_id_inverted(image_dimension, class_id, encoded_pixels, image=True):
+    """set specific values in a null-matrix to `class_id` and returns the filled mask.
+    
+    Input variables:
+    image_dimension - tupel of the dimension of the image or matrix
+    class_id        - the class that will be set at `encoded_pixels`
+    encoded_pixels  - String with encoded pixel pairs of shape (start_pixel, pixel_length)
+    image           - for testing purposes set to false
+    rows            - for testing purposes set to shape[0] of testing matrix
+    """
+    length_sum = 0
+    # initialise mask
     mask = np.zeros(image_dimension)
     rows = image_dimension[0]
     
@@ -94,6 +135,11 @@ def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=T
 
 def decode_pixel(image_dimension, class_id, encoded_pixels, image=True):
     mask = create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=True)
+    return mask
+
+
+def decode_pixel_inverted(image_dimension, class_id, encoded_pixels, image=True):
+    mask = create_mask_with_class_id_inverted(image_dimension, class_id, encoded_pixels, image=True)
     return mask
 
 
