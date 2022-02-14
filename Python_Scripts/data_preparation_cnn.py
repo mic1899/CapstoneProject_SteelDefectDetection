@@ -2,6 +2,8 @@ import random
 import os
 import time
 import pandas as pd
+import glob
+import numpy as np
 
 import shutil
 import cv2
@@ -129,16 +131,36 @@ def create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_
     else:
         mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=2,encoded_pixels=encoded_pixels)
     mask *= 255
-    
+    #print(type(mask))
     written = cv2.imwrite(image_name, mask)
     #print(written)
+    
+
+
+def load_images_and_ids_from_folder(folder):
+    images = []
+    image_ids = []
+    for filename in os.listdir(folder):
+        #print(filename)
+        img = cv2.imread(os.path.join(folder,filename))
+        if img is not None:
+            images.append(img)
+            image_ids.append(filename)
+    return images, image_ids
     
     
     
 def generate_mask_images(df, class_id, image_dimension, train=True, inverse_masks=False):
     """generates and saves mask images for `class_id`
     """
-    print(f'generating mask images for ClassId {class_id} images...')
+    if train:
+        print(f'generating mask images for ClassId {class_id} training images...')
+    else:
+        print(f'generating mask images for ClassId {class_id} test images...')
+    
+    if inverse_masks:
+        print('generating inverse masks.')
+        
     image_ids = df.query('ClassId == @class_id').ImageId
 
     path = os.getcwd()
@@ -146,22 +168,29 @@ def generate_mask_images(df, class_id, image_dimension, train=True, inverse_mask
     #print(path)
     if train:
         target_directory = '/data/segmentation/train_mask/' + path_suffix
+        folder = path + '/data/segmentation/train/' + path_suffix
     else:
         target_directory = '/data/segmentation/test_mask/' + path_suffix
-    # switch to target directory for saving process
-    os.chdir(path + target_directory)
+        folder = path + '/data/segmentation/test/' + path_suffix
+    
+    #os.chdir(path + target_directory)
+     
+    
+    images, image_ids = load_images_and_ids_from_folder(folder)
 
-    for image_id in image_ids:
-        if train:
-            image = cv2.imread('/data/segmentation/train/' + path_suffix + image_id)
-        else:
-            image = cv2.imread('/data/segmentation/test/' + path_suffix + image_id)
+    for image_id, image in zip(image_ids, images):
+        
         encoded_pixels = df.query('ImageId == @image_id and ClassId == @class_id')[['EncodedPixels']]
         encoded_pixels = encoded_pixels.EncodedPixels.values[0]
-        create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_masks)
         
-    # switch back to home directory
-    os.chdir(path)
+        # switch to target directory for saving process
+        os.chdir(path + target_directory)
+        create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_masks)
+        # switch back to home directory
+        os.chdir(path)
+        
+    
+    #os.chdir(path)
     
     print('mask images successfully generated!')
     print()
@@ -192,6 +221,7 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
     
     target_directory_image = '/data/segmentation/train_aug/' + path_suffix
     target_directory_mask = '/data/segmentation/train_mask_aug/' + path_suffix
+    #print(target_directory_image)
     
     i = 1
     
@@ -202,22 +232,23 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
         mask_id = 'mask_' + image_id
         #print(image_id, mask_id)
         
-        original_image = cv2.imread('/data/segmentation/train/' + path_suffix + image_id)
-        #print(type(original_image))
-        original_mask = cv2.imread('/data/segmentation/train_mask/' + path_suffix + mask_id)
+        original_image = cv2.imread('data/segmentation/train/' + path_suffix + image_id)
+        original_mask = cv2.imread('data/segmentation/train_mask/' + path_suffix + mask_id)
         
+      
         augmented = augment(image=original_image, mask=original_mask)
         transformed_image = augmented['image']
         transformed_mask = augmented['mask']
         
         os.chdir(path + target_directory_image)
         written = cv2.imwrite('aug_' + str(i) + '_' + image_id, transformed_image)
-        #print(written)
+        #print('image written:',written)
         
         os.chdir(path + target_directory_mask)
         written = cv2.imwrite('aug_' + str(i) + '_' + mask_id, transformed_mask)
-        #print(written)
-        
+        #print('mask written:',written)
+
+
         os.chdir(path)
         
         i += 1
@@ -242,8 +273,6 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
     inverse_masks - if `True`, defect pixels will be white, pixels without defect will be black
     """
 
-    print('Starting data preparations')
-    print('-----'*10)
 
     start = time.time()
     # split data into train and test
@@ -267,3 +296,51 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
 
     print('data successfully prepared for the model!')
     print('time elapsed:', end-start)
+    
+    
+    
+def get_resized_image_list(class_id, size_x, size_y):
+    #Capture training image info as a list
+    train_images = []
+    path_suffix = 'c' + str(class_id) + '/'
+
+    for directory_path in glob.glob('data/segmentation/train_aug/' + path_suffix):
+        for img_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+            #print(img_path)
+            #break
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)       
+            img = cv2.resize(img, (size_y, size_x))
+            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            train_images.append(img)
+            #train_labels.append(label)
+    #Convert list to array for machine learning processing        
+    train_images = np.array(train_images)
+    
+    return train_images
+
+
+
+def get_resized_mask_list(class_id, size_x, size_y):
+    #Capture mask/label info as a list
+    train_masks = [] 
+    path_suffix = 'c' + str(class_id) + '/'
+
+    for directory_path in glob.glob('data/segmentation/train_mask_aug/' + path_suffix):
+        for mask_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+            mask = cv2.imread(mask_path, 0)       
+            mask = cv2.resize(mask, (size_y, size_x))
+            #mask = cv2.cvtColor(mask, cv2.COLOR_RGB2BGR)
+            train_masks.append(mask)
+            #train_labels.append(label)
+    #Convert list to array for machine learning processing          
+    train_masks = np.array(train_masks)
+    
+    return train_masks
+
+
+
+def get_resized_image_and_mask_lists(class_id, size_x, size_y):
+    train_images = get_resized_image_list(class_id, size_x, size_y)
+    train_masks = get_resized_mask_list(class_id, size_x, size_y)
+    
+    return train_images, train_masks

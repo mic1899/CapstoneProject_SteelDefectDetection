@@ -1,11 +1,14 @@
 jupyterlab
 pandas
-matplotlib
-Pillow
 numpy
+matplotlib
+seaborn
+Pillow
 scipy
 tensorflow-hub
-seaborn
+tensorflow_datasets
 imblearn
 scikit-learn
 scikit-image
+segmentation-models
+-U albumentations --no-binary qudida,albumentations
