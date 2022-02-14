@@ -2,6 +2,8 @@ import random
 import os
 import time
 import pandas as pd
+import glob
+import numpy as np
 
 import shutil
 import cv2
@@ -294,3 +296,51 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
 
     print('data successfully prepared for the model!')
     print('time elapsed:', end-start)
+    
+    
+    
+def get_resized_image_list(class_id, size_x, size_y):
+    #Capture training image info as a list
+    train_images = []
+    path_suffix = 'c' + str(class_id) + '/'
+
+    for directory_path in glob.glob('data/segmentation/train_aug/' + path_suffix):
+        for img_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+            #print(img_path)
+            #break
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)       
+            img = cv2.resize(img, (size_y, size_x))
+            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            train_images.append(img)
+            #train_labels.append(label)
+    #Convert list to array for machine learning processing        
+    train_images = np.array(train_images)
+    
+    return train_images
+
+
+
+def get_resized_mask_list(class_id, size_x, size_y):
+    #Capture mask/label info as a list
+    train_masks = [] 
+    path_suffix = 'c' + str(class_id) + '/'
+
+    for directory_path in glob.glob('data/segmentation/train_mask_aug/' + path_suffix):
+        for mask_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+            mask = cv2.imread(mask_path, 0)       
+            mask = cv2.resize(mask, (size_y, size_x))
+            #mask = cv2.cvtColor(mask, cv2.COLOR_RGB2BGR)
+            train_masks.append(mask)
+            #train_labels.append(label)
+    #Convert list to array for machine learning processing          
+    train_masks = np.array(train_masks)
+    
+    return train_masks
+
+
+
+def get_resized_image_and_mask_lists(class_id, size_x, size_y):
+    train_images = get_resized_image_list(class_id, size_x, size_y)
+    train_masks = get_resized_mask_list(class_id, size_x, size_y)
+    
+    return train_images, train_masks
