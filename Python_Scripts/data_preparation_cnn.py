@@ -153,9 +153,9 @@ def generate_mask_images(df, class_id, image_dimension, train=True, inverse_mask
 
     for image_id in image_ids:
         if train:
-            image = cv2.imread('data/segmentation/train/' + path_suffix + image_id)
+            image = cv2.imread('/data/segmentation/train/' + path_suffix + image_id)
         else:
-            image = cv2.imread('data/segmentation/test/' + path_suffix + image_id)
+            image = cv2.imread('/data/segmentation/test/' + path_suffix + image_id)
         encoded_pixels = df.query('ImageId == @image_id and ClassId == @class_id')[['EncodedPixels']]
         encoded_pixels = encoded_pixels.EncodedPixels.values[0]
         create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_masks)
@@ -202,9 +202,9 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
         mask_id = 'mask_' + image_id
         #print(image_id, mask_id)
         
-        original_image = cv2.imread('data/segmentation/train/' + path_suffix + image_id)
+        original_image = cv2.imread('/data/segmentation/train/' + path_suffix + image_id)
         #print(type(original_image))
-        original_mask = cv2.imread('data/segmentation/train_mask/' + path_suffix + mask_id)
+        original_mask = cv2.imread('/data/segmentation/train_mask/' + path_suffix + mask_id)
         
         augmented = augment(image=original_image, mask=original_mask)
         transformed_image = augmented['image']
@@ -228,43 +228,42 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
     
     
     
-    def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks):
+def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks):
     """combines all data preparations:
     - creating required folder structure
     - copying images to folders according to train-test-split using `seed`
     - generating masks for all images of `class_id`
     - augmenting images and corresponding masks
-    
+
     Input parameters:
     df            - data frame that contains all defects and the `FilePaths` to all images
     seed          - seed for `train_test_split`
     class_id      - id of defect class
     inverse_masks - if `True`, defect pixels will be white, pixels without defect will be black
     """
-    
+
     print('Starting data preparations')
     print('-----'*10)
-    
+
     start = time.time()
     # split data into train and test
-    df_train, df_test = data_preparation_cnn.create_train_test_dfs(df, seed)
-    
+    df_train, df_test = create_train_test_dfs(df, seed)
+
     subfolder = 'segmentation'
     # sort images according to train-test-split
-    data_preparation_cnn.copy_images_to_train_test(df_train, df_test, subfolder, class_id)
-    
+    copy_images_to_train_test(df_train, df_test, subfolder, class_id)
+
     # generate mask images for train and test data
-    data_preparation_cnn.generate_mask_images(df, class_id, image_dimension, train=True, inverse_masks=inverse_masks)
-    data_preparation_cnn.generate_mask_images(df, class_id, image_dimension, train=False, inverse_masks=inverse_masks)
-    
+    generate_mask_images(df, class_id, image_dimension, train=True, inverse_masks=inverse_masks)
+    generate_mask_images(df, class_id, image_dimension, train=False, inverse_masks=inverse_masks)
+
     # augment images and masks where needed
     image_ids = df_train.query('ClassId == @class_id').ImageId.values
     num_augmentations = max(df_train.groupby('ClassId').count().ImageId)
+
+    augement_images_and_masks(image_ids=image_ids, num_augmentations=num_augmentations, class_id=class_id)
     
-    data_preparation_cnn.augement_images_and_masks(image_ids=image_ids, 
-                                                   num_augmentations=num_augmentations, 
-                                                   class_id=class_id)
     end = time.time()
-    
+
     print('data successfully prepared for the model!')
     print('time elapsed:', end-start)
