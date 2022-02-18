@@ -51,7 +51,7 @@ def get_pixel_pairs(encoded_pixels):
     return pairs
 
 
-def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=True):
+def create_mask_with_class_id_inverted(image_dimension, class_id, encoded_pixels, image=True):
     """set specific values in a null-matrix to `class_id` and returns the filled mask.
     
     Input variables:
@@ -92,7 +92,7 @@ def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=T
     return mask
 
 
-def create_mask_with_class_id_inverted(image_dimension, class_id, encoded_pixels, image=True):
+def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=True):
     """set specific values in a null-matrix to `class_id` and returns the filled mask.
     
     Input variables:

@@ -124,16 +124,16 @@ def create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_
     image_name = 'mask_' + image_id
     
     # os.chdir(path + target_directory)
-    #print(target_directory.split('/')[0])
-    #print(path.joinpath(target_directory.split('/')[0], image_name))
+    # print(target_directory.split('/')[0])
+    # print(path.joinpath(target_directory.split('/')[0], image_name))
     if inverse_masks:
-        mask = mask_conversion.create_mask_with_class_id_inverted(image_dimension,class_id=2,encoded_pixels=encoded_pixels)
+        mask = mask_conversion.create_mask_with_class_id_inverted(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
     else:
-        mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=2,encoded_pixels=encoded_pixels)
-    mask *= 255
-    #print(type(mask))
+        mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
+    # mask *= 255
+    # print(type(mask))
     written = cv2.imwrite(image_name, mask)
-    #print(written)
+    # print(written)
     
 
 
@@ -270,7 +270,7 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
     df            - data frame that contains all defects and the `FilePaths` to all images
     seed          - seed for `train_test_split`
     class_id      - id of defect class
-    inverse_masks - if `True`, defect pixels will be white, pixels without defect will be black
+    inverse_masks - if `True`, defect pixels will be 0, pixels without defect will be 1
     """
 
 
