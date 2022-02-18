@@ -124,16 +124,16 @@ def create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_
     image_name = 'mask_' + image_id
     
     # os.chdir(path + target_directory)
-    #print(target_directory.split('/')[0])
-    #print(path.joinpath(target_directory.split('/')[0], image_name))
+    # print(target_directory.split('/')[0])
+    # print(path.joinpath(target_directory.split('/')[0], image_name))
     if inverse_masks:
-        mask = mask_conversion.create_mask_with_class_id_inverted(image_dimension,class_id=2,encoded_pixels=encoded_pixels)
+        mask = mask_conversion.create_mask_with_class_id_inverted(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
     else:
-        mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=2,encoded_pixels=encoded_pixels)
-    mask *= 255
-    #print(type(mask))
+        mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
+    # mask *= 255
+    # print(type(mask))
     written = cv2.imwrite(image_name, mask)
-    #print(written)
+    # print(written)
     
 
 
@@ -259,7 +259,7 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
     
     
     
-def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks):
+def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks, num_augmentations):
     """combines all data preparations:
     - creating required folder structure
     - copying images to folders according to train-test-split using `seed`
@@ -270,7 +270,7 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
     df            - data frame that contains all defects and the `FilePaths` to all images
     seed          - seed for `train_test_split`
     class_id      - id of defect class
-    inverse_masks - if `True`, defect pixels will be white, pixels without defect will be black
+    inverse_masks - if `True`, defect pixels will be 0, pixels without defect will be 1
     """
 
 
@@ -288,7 +288,7 @@ def prepare_data_for_class_id(df, image_dimension, seed, class_id, inverse_masks
 
     # augment images and masks where needed
     image_ids = df_train.query('ClassId == @class_id').ImageId.values
-    num_augmentations = max(df_train.groupby('ClassId').count().ImageId)
+    # num_augmentations = max(df_train.groupby('ClassId').count().ImageId)
 
     augement_images_and_masks(image_ids=image_ids, num_augmentations=num_augmentations, class_id=class_id)
     
@@ -305,7 +305,7 @@ def get_resized_image_list(class_id, size_x, size_y):
     path_suffix = 'c' + str(class_id) + '/'
 
     for directory_path in glob.glob('data/segmentation/train_aug/' + path_suffix):
-        for img_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+        for img_path in sorted(glob.glob(os.path.join(directory_path, "*.jpg"))):
             #print(img_path)
             #break
             img = cv2.imread(img_path, cv2.IMREAD_COLOR)       
@@ -326,7 +326,7 @@ def get_resized_mask_list(class_id, size_x, size_y):
     path_suffix = 'c' + str(class_id) + '/'
 
     for directory_path in glob.glob('data/segmentation/train_mask_aug/' + path_suffix):
-        for mask_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+        for mask_path in sorted(glob.glob(os.path.join(directory_path, "*.jpg"))):
             mask = cv2.imread(mask_path, 0)       
             mask = cv2.resize(mask, (size_y, size_x))
             #mask = cv2.cvtColor(mask, cv2.COLOR_RGB2BGR)
