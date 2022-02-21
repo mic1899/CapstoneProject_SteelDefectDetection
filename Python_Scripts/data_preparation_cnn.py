@@ -233,8 +233,8 @@ def augement_images_and_masks(image_ids, num_augmentations, class_id):
         #print(i)
         number = random.randint(0, len(image_ids) -1)
         image_id = image_ids[number]
-        mask_id = 'mask_' + image_id
-        #print(image_id, mask_id)
+        mask_id = 'mask_' + image_id.split('.')[0] + '.png'
+        # print(image_id, mask_id)
         
         original_image = cv2.imread('data/segmentation/train/' + path_suffix + image_id)
         original_mask = cv2.imread('data/segmentation/train_mask/' + path_suffix + mask_id)
@@ -330,7 +330,7 @@ def get_resized_mask_list(class_id, size_x, size_y):
     path_suffix = 'c' + str(class_id) + '/'
 
     for directory_path in glob.glob('data/segmentation/train_mask_aug/' + path_suffix):
-        for mask_path in sorted(glob.glob(os.path.join(directory_path, "*.jpg"))):
+        for mask_path in sorted(glob.glob(os.path.join(directory_path, "*.png"))):
             mask = cv2.imread(mask_path, 0)       
             mask = cv2.resize(mask, (size_y, size_x))
             #mask = cv2.cvtColor(mask, cv2.COLOR_RGB2BGR)
