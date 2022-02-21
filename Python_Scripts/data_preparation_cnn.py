@@ -121,7 +121,7 @@ def copy_images_to_train_test(df_train, df_test, subfolder, class_id=2):
 def create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_masks):
     # path = os.getcwd()
     # target_directory = '/data/segmentation/train_mask/c1/'
-    image_name = 'mask_' + image_id
+    image_name = 'mask_' + image_id.split('.')[0] + '.png'
     
     # os.chdir(path + target_directory)
     # print(target_directory.split('/')[0])
@@ -129,11 +129,15 @@ def create_mask_image(image, image_id, image_dimension, encoded_pixels, inverse_
     if inverse_masks:
         mask = mask_conversion.create_mask_with_class_id_inverted(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
     else:
-        mask = mask_conversion.create_mask_with_class_id(image_dimension,class_id=1,encoded_pixels=encoded_pixels)
+        mask = mask_conversion.create_mask_with_class_id(image_dimension=image_dimension,
+                                                         class_id=1,
+                                                         encoded_pixels=encoded_pixels
+                                                        )
     # mask *= 255
     # print(type(mask))
     written = cv2.imwrite(image_name, mask)
     # print(written)
+    return mask
     
 
 

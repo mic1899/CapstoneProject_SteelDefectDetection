@@ -120,7 +120,7 @@ def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=T
         for pixel in range(int(pair[1])):
             # write into same column
             if (row + pixel) < rows:
-                mask[row + pixel][column] = class_id  
+                mask[row + pixel][column] = int(class_id)  
                 
             else: # for column changes
                 # compute required column and row shifts for `class_id` placement
@@ -128,7 +128,7 @@ def create_mask_with_class_id(image_dimension, class_id, encoded_pixels, image=T
                 row_shift = pixel - col_shift * rows
 
                 # write `class_id` to shifted position
-                mask[row + row_shift][column + col_shift] = class_id
+                mask[row + row_shift][column + col_shift] = int(class_id)
 
     return mask
 
