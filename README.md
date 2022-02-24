@@ -1,5 +1,18 @@
 # CapstoneProject_SteelDefectDetection
 
+# Notebooks
+
+1
+2
+3
+4
+
+
+
+
+
+
+
 ## Environment
 Make sure you have the latest version of macOS (currently Monterey) installed.
 Also make sure that xcode is installed and updated: 
@@ -27,3 +40,4 @@ pip install tensorflow-macos
 pip install tensorflow-metal
 pip install -r requirements.txt
 ```
+
