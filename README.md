@@ -44,42 +44,22 @@ As you can see here an overview about the generated notebooks during this projec
 
 |No.|Notebook| Brief Summary|
 |---|---|---|
-|1|EDA.ipynb| This notebook contains the exploritory data analysis regarding this project.|
-|2|convert-to-mask.ipynb| This notebook generates masks (matrix of zeros and ones - ones mark defected areas) from the encoded pixels |
-|3|defectPostion.ipynb| This notebook generates pixels at specified position of failure encoding from the csv file. Aftwards it plots the image with and without defect in 2 subplots to compare real pattern and defect labelled area.|
-|4|BinaryCNN.ipynb| Here you can find the binary classification model as Convolutional Neural Network(CNN). This notebook tooks the data from the challenge and do binary comparisons like e.g. Class 3 Vs. Remain Classes. It is setup as to use with KERAS generators and the required folder structure. The folder structure can be created with functions in the notebook.|
-|5|Clustering.ipynb| Clustering is an unsupervised machine learning task. Here in this notebook it were analysed how this technique can enhence dataset from the unlabeled images.|
-|6|HOG.ipynb|Here the Histogram of Oriented Gradients were calculated from the given images. |
-|7|image-augmentation.ipynb|This notebook can be used to do the image augmentation. |
-|8|isolate-defectless-images.ipynb|In this notebook the images without defect labelling can be isolated.|
-|9|KNN-with-augmented-images.ipynb|Here the k-Nearest-Neighbour algorithm were used to classify the images. The images were pre-processed with augmention. Means that the give data were multiplied|
-|10|KNN-with-initial.ipynb.ipynb|In here the k-Nearest-Neighbour algorithm were used to classify the images. In this case the images were not pre-processed.|
-|11|Model-with-HOG-SURF.ipynb|In this notebook the images are pre-processed either with HOG method or SURF.|
-|12|segmentation_multi_model.ipynb|This is the key notebook of the CNN multi model generation. Here it is used the UNET model pre-trained to efficientnetb5 database. Finally the 4 models, one for each defect class will be calculated. Afterwards you can predict with single images the 4 models response mask.|
-|13|segmentation_single_model.ipynb|This notebook is similar to the "segmentation_multi_model.ipynb", at least from model perspective. Also the pre-trained UNET model is the key to predict the masks of the images. Different here it especially setup to analyze the masks of a single model of one defect class.|
-|14|SURF.ipynb | To analyze the images regarding the SURF(Speeded Up Robust Features) method you can use this notebook.|
-|15| unstructered-data-handling.ipnyb |This notebook generates the \*.csv file for all images and their the storage path|
-
+|0|00_data_preparations.ipynb|This notebook is to extract the information from \*.csv to use for different workbooks here .|
+|1|classification_HOG_k-Nearest_Neighbor.ipynb|Here the Histogram of Oriented Gradients were calculated from the given images and applied to a k-NN algorithim|
+|2|classification-initial-and-augmented-images-k-nearest-neighbor.ipynb| Classification notebook with SURF method appied to the k-NN|
+|3|classification-initial-and-augmented-images-k-nearest-neighbor.ipynb| Classification notebook with the initial images and with the augemented images algorithim|
+|4|clustering.ipynb|Clustering is an unsupervised machine learning task. Here in this notebook it were analysed how this technique can enhence dataset from the unlabeled images.|
+|5|convert-to-mask.ipynb|This notebook generates masks (matrix of zeros and ones - ones mark defected areas) from the encoded pixels |
+|6|defectPostion.ipynb|This notebook generates pixels at specified position of failure encoding from the csv file. Aftwards it plots the image with and without defect in 2 subplots to compare real pattern and defect labelled area.|
+|7|EDA.ipynb|This notebook contains the exploritory data analysis regarding this project.|
+|8|image-augmentation.ipynb|This notebook can be used to do the image augmentation. |
+|9|isolate-defectless-images.ipynb|In this notebook the images without defect labelling can be isolated.|
+|10|segmentation_multi_model.ipynb|This is the key notebook of the CNN multi model generation. Here it is used the UNET model pre-trained to efficientnetb5 database. Finally the 4 models, one for each defect class will be calculated. Afterwards you can predict with single images the 4 models response mask.|
+|11|segmentation_single_model.ipynb|This notebook is similar to the "segmentation_multi_model.ipynb", at least from model perspective. Also the pre-trained UNET model is the key to predict the masks of the images. Different here it especially setup to analyze the masks of a single model of one defect class.|
+|12|unstructered-data-handling.ipnyb |This notebook generates the \*.csv file for all images and their the storage path|
 
 
 ---
-
-1 first-EDA.ipynb 
-2 convert-to-mask.ipynb
-3 FailurePostion.ipynb
-4 BinaryCNN.ipynb
-5 Clustering.ipynb
-6 HOG.ipynb
-7 image-augmentation.ipynb
-8 isolate-defectless-images.ipynb
-9 KNN-with-augmentet-images.ipynb
-10 KNN-with-initial.ipynb.ipynb
-11 Model-with-HOG-SURF.ipynb
-12 segmentation_multi_model.ipynb
-13 segmentation_single_model.ipynb
-14 SURF.ipynb
-15 unstructered-data-handling.ipnyb
-
 
 ## Environment
 Make sure you have the latest version of macOS (currently Monterey) installed.
