@@ -3,6 +3,9 @@ import pandas as pd
 import pathlib
 from skimage import io
 import time
+import cv2
+
+
 
 def rank_keypoint(kp_dict, ranking_number):
     """Returns a keypoint at position `ranking_number` from a given dictionary of keypoints (`kp_dict`).
@@ -207,7 +210,7 @@ def build_keypoints_from_list(train_images_list, surf_object):
         # `image` so far holds just the path to the image. Convert to image file
         image = io.imread("data/train_images/" + image.name)
         # Find keypoints and descriptors directly
-        kp, des = surf.detectAndCompute(image, None)
+        kp, des = surf_object.detectAndCompute(image, None)
 
         surf_images['keypoints'].append(kp)
         surf_images['NumberKP'].append(len(kp))
