@@ -46,11 +46,11 @@ As you can see here an overview about the generated notebooks during this projec
 |---|---|---|
 |0|00_data_preparations.ipynb|This notebook is to extract the information from \*.csv to use for different workbooks here .|
 |1|classification_HOG_k-Nearest_Neighbor.ipynb|Here the Histogram of Oriented Gradients were calculated from the given images and applied to a k-NN algorithm|
-|2|classification-initial-and-augmented-images-k-nearest-neighbor.ipynb|Classification notebook with SURF method appied to the k-NN algorithm|
+|2|classification-initial-and-augmented-images-k-nearest-neighbor.ipynb|Classification notebook with SURF method applied to the k-NN algorithm|
 |3|classification-initial-and-augmented-images-k-nearest-neighbor.ipynb|Classification notebook with the initial images and with the augemented images algorithim|
 |4|clustering.ipynb|Clustering is an unsupervised machine learning task. Here in this notebook it were analysed how this technique can enhence dataset from the unlabeled images.|
 |5|convert-to-mask.ipynb|This notebook generates masks (matrix of zeros and ones - ones mark defected areas) from the encoded pixels |
-|6|defectPostion.ipynb|This notebook generates pixels at specified position of defect encoding from the csv file. Aftwards it plots the image with and without defect in 2 subplots to compare real pattern and defect labelled area.|
+|6|defectPostion.ipynb|This notebook generates pixels at specified position of defect encoding from the csv file. Afterwards it plots the image with and without defect in 2 subplots to compare real pattern and defect labelled area.|
 |7|EDA.ipynb|This notebook contains the exploritory data analysis regarding this project.|
 |8|image-augmentation.ipynb|This notebook can be used to do the image augmentation. |
 |9|isolate-defectless-images.ipynb|In this notebook the images without defect labelling can be isolated.|
